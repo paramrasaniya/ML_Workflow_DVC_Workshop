@@ -28,13 +28,33 @@ stages:
     params:
       params.yaml:
         epochs: 5
-        lr: 0.0
+        lr: 0.001
     outs:
     - path: metrics.json
       hash: md5
-      md5: 9356556ba2f5669e3ceed63f8deee1f4
+      md5: ada97714bac7f0b76f798745b09ac560
       size: 28
     - path: model.pt
       hash: md5
-      md5: 135e0f2013570eefa053fc7960326a63
+      md5: be37cdb2f97d646c3d88f88ab9749f18
       size: 56713
+  predict:
+    cmd: python src/predict.py
+    deps:
+    - path: data/processed/test.pt
+      hash: md5
+      md5: 0c88d311c92414204c9425d74e447890
+      size: 31441677
+    - path: model.pt
+      hash: md5
+      md5: be59752c31f912d9140d4733ed91be61
+      size: 56713
+    - path: src/predict.py
+      hash: md5
+      md5: b7baa3b4df9a30a2d7d4cbbb0e9f5691
+      size: 1112
+    outs:
+    - path: predictions.json
+      hash: md5
+      md5: 1cc5c8fa3518fd70490e2a8ebb2062e9
+      size: 923
