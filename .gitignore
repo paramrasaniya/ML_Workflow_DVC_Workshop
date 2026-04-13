@@ -1,3 +1,30 @@
-/model.pt
-/metrics.json
-/predictions.json
+# Virtual environments
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+src/__pycache__/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Data and generated outputs
+data/raw/
+data/processed/
+model.pt
+metrics.json
+predictions.json
+
+# Logs
+*.log

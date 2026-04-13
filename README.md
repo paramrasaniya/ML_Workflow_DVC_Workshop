@@ -1,70 +1,161 @@
 # ML Workflow with DVC
 
-## Workshop Summary
+This project is a simple machine learning workflow built with **DVC (Data Version Control)** and **PyTorch**. The goal of this workshop is to understand how DVC helps organize a machine learning pipeline by tracking data, code, parameters, models, and metrics in a reproducible way.
 
-This workshop introduces students to building a reproducible machine learning workflow using Data Version Control (DVC). The goal is to move beyond ad-hoc experimentation toward structured, traceable, and collaborative ML development practices.
+In this project, the pipeline is based on the **MNIST** dataset and includes these main steps:
 
-Students begin by setting up a minimal project that combines Git and DVC. They learn how to separate code, data, and models while maintaining a unified workflow. The project uses a simple Convolutional Neural Network (CNN) trained on the MNIST dataset to keep the focus on workflow concepts rather than model complexity.
-
-The workflow is divided into pipeline stages: data preparation, model training, and prediction. Each stage is defined in `dvc.yaml`, allowing DVC to track dependencies and determine when stages need to be re-executed. Students run the pipeline using `dvc repro`, inspect results using `dvc metrics show`, and compare experiments using `dvc metrics diff`.
-
-A key component of the workshop is experimentation through `params.yaml`. Students modify hyperparameters such as learning rate, epochs, and batch size, and observe how these changes propagate through the pipeline. This reinforces the idea that experiments should be controlled, reproducible, and comparable.
-
-The workshop also introduces the concept of extending pipelines. Students add a prediction stage that reuses the trained model, demonstrating how ML workflows evolve from training to inference. This stage highlights the importance of modular code and reinforces best practices such as separating model definitions from execution logic.
-
-Finally, students learn how to share their work using both Git and DVC. Git is used to version code and metadata, while DVC manages large artifacts such as datasets and models. By configuring a remote storage location and using `dvc push`, students understand how teams collaborate on ML projects without storing large files in Git repositories.
-
-## Learning Objectives
-
-By the end of this workshop, students will be able to:
-
-- Explain the role of DVC in an MLOps workflow
-- Describe the limitations of Git for machine learning projects
-- Build and run a multi-stage DVC pipeline
-- Track datasets, models, and metrics using DVC
-- Modify experiment parameters and compare results
-- Understand dependency-aware pipeline execution
-- Extend a pipeline to include inference (prediction)
-- Apply best practices for modular ML code design
-- Differentiate between `git push` and `dvc push`
-- Reproduce a workflow on another machine using DVC
+- preparing the dataset
+- training a CNN model
+- saving evaluation metrics
+- generating predictions
 
 ## Project Structure
 
-```
-project/
+```text
+ML_Workflow_DVC/
 ├── data/
+│   └── processed/
 ├── src/
 │   ├── prepare.py
 │   ├── train.py
-│   ├── predict.py
+│   └── predict.py
 ├── params.yaml
 ├── dvc.yaml
+├── metrics.json
+├── predictions.json
+├── model.pt
+├── ML_Workflow_DVC_updated.ipynb
+└── README.md
 ```
 
-## Getting Started
+## What Each File Does
+
+- `src/prepare.py` downloads and prepares the MNIST dataset.
+- `src/train.py` trains the CNN model using the values from `params.yaml`.
+- `src/predict.py` loads the trained model and creates predictions on the test set.
+- `params.yaml` stores experiment settings like epochs, learning rate, and batch size.
+- `dvc.yaml` defines the DVC pipeline stages and their dependencies.
+- `metrics.json` stores the model evaluation result.
+- `predictions.json` stores sample predictions from the trained model.
+- `model.pt` is the saved trained PyTorch model.
+- `ML_Workflow_DVC_updated.ipynb` explains the workflow step by step with code and talking points.
+
+## Setup
+
+### 1. Clone the repository
 
 ```bash
-pip install dvc torch torchvision scikit-learn pandas pyyaml
-git init
-dvc init
+git clone https://github.com/paramrasaniya/ML_Workflow_DVC_Workshop.git
+cd ML_Workflow_DVC
+```
+
+### 2. Create and activate a virtual environment
+
+#### Windows PowerShell
+
+```powershell
+py -3.11 -m venv venv
+.\venv\Scripts\Activate.ps1
+```
+
+#### Mac/Linux
+
+```bash
+python3.11 -m venv venv
+source venv/bin/activate
+```
+
+### 3. Install required libraries
+
+```bash
+pip install dvc torch torchvision scikit-learn pandas pyyaml jupyter notebook
+```
+
+## How to Run the Project
+
+### Option 1: Run the DVC pipeline
+
+This is the main way to run the project.
+
+```bash
+dvc repro
+```
+
+After running the pipeline, you can view the metric with:
+
+```bash
+dvc metrics show
+```
+
+### Option 2: Run each script manually
+
+If you want to test each step one by one, run:
+
+```bash
+python src/prepare.py
+python src/train.py
+python src/predict.py
+```
+
+## Parameters
+
+The training settings are stored in `params.yaml`.
+
+Example:
+
+```yaml
+epochs: 2
+lr: 0.001
+batch_size: 64
+```
+
+You can change these values and then rerun:
+
+```bash
 dvc repro
 dvc metrics show
 ```
 
-## Collaboration Workflow
+## DVC Pipeline Stages
 
-```bash
-dvc push
-git push
+The pipeline is defined in `dvc.yaml` and follows this workflow:
+
+```text
+prepare -> train -> predict
 ```
 
-To reproduce on another machine:
+- **prepare**: creates processed dataset files
+- **train**: trains the CNN model and saves `model.pt` and `metrics.json`
+- **predict**: uses the trained model to create `predictions.json`
 
-```bash
-git clone <repo>
-cd <repo>
-pip install dvc torch torchvision scikit-learn pandas pyyaml
-dvc pull
-dvc repro
-```
+## Output Files
+
+After a successful run, these main output files are created:
+
+- `data/processed/train.pt`
+- `data/processed/test.pt`
+- `model.pt`
+- `metrics.json`
+- `predictions.json`
+
+## Notes
+
+- If `dvc pull` does not work in the professor repo, run `dvc repro` instead.
+- Do not run `git init` or `dvc init` again if the cloned repo already contains `.git` and `.dvc`.
+- Run commands from the **project root folder**.
+
+## Learning Summary
+
+From this project, we learned that:
+
+- Git is good for code, but DVC is better for tracking ML artifacts like data and models.
+- `params.yaml` helps keep experiments organized.
+- `dvc.yaml` makes the workflow reproducible and easier to rerun.
+- DVC only reruns the stages that actually changed.
+- A pipeline can be extended step by step, such as adding a prediction stage after training.
+
+## Team Members
+
+- 1) Param Rasaniya,         Student ID: 9086095
+- 2) Viraj Mistry,           Student ID: 9088985
+- 3) Sumanth Reddy,          Student ID: 9040660
